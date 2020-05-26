@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "typeRoots": [
+      "./src/types",
+      "./node_modules/@types",
+    ],
 
     "module": "commonjs",                     /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
     "strict": true,                           /* Enable all strict type-checking options. */
@@ -19,7 +23,7 @@
     "strictPropertyInitialization": false,
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
   ],
   "exclude": [
     "node_modules",

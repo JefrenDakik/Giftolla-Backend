@@ -1,6 +1,7 @@
 import User from '../../models/mysql/user';
+
 declare global {
-  namespace Express {
+  declare namespace Express {
     export interface Request {
       currentUser: User;
     }    
