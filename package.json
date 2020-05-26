@@ -1,0 +1,49 @@
+{
+  "name": "be-unique-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "build": "tsc",
+    "start": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JefrenDakik/Be-Unique-Backend.git"
+  },
+  "author": "jaafar dakik",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JefrenDakik/Be-Unique-Backend/issues"
+  },
+  "homepage": "https://github.com/JefrenDakik/Be-Unique-Backend#readme",
+  "dependencies": {
+    "argon2": "^0.26.2",
+    "body-parser": "^1.19.0",
+    "celebrate": "^12.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "method-override": "^3.0.0",
+    "mysql2": "^2.1.0",
+    "reflect-metadata": "^0.1.13",
+    "typedi": "^0.8.0",
+    "typeorm": "^0.2.24",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.6",
+    "@types/express": "^4.17.6",
+    "@types/node": "^14.0.1",
+    "@types/validator": "^13.0.0",
+    "@types/winston": "^2.4.4",
+    "install": "^0.13.0",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2"
+  }
+}
