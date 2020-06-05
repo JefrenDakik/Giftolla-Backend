@@ -1,4 +1,4 @@
-export interface IUser {
+export interface ICustomer {
   _id: string;
   name: string;
   email: string;
@@ -6,7 +6,7 @@ export interface IUser {
   salt: string;
 }
 
-export interface IUserInput {
+export interface ICustomerInput {
   name: string;
   email: string;
   password: string;

@@ -1,8 +1,9 @@
-import "reflect-metadata";
-import {createConnection} from "typeorm";
+import {createConnection, useContainer } from "typeorm"
+import { Container } from 'typedi'
 
 export default async () => {
-  return createConnection({
+  useContainer(Container)
+  return await createConnection({
     type: "mysql",
     host: "localhost",
     port: 3306,
@@ -16,6 +17,6 @@ export default async () => {
     logging: false
   }).then(async connection => {
     return connection
-      // here you can start to work with your entities
+    // here you can start to work with your entities
   }).catch(error => console.log(error))
 }

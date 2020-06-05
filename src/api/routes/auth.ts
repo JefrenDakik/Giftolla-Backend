@@ -1,10 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express'
-import "reflect-metadata"
 import { Container } from 'typedi'
 import AuthService from '../../services/auth'
 import { celebrate, Joi, Segments } from 'celebrate'
 import winston from 'winston'
-import { IUserInput } from '../../interfaces/IUser'
+import { ICustomerInput } from '../../interfaces/ICustomer'
 
 const route = Router()
 
@@ -12,9 +11,9 @@ export default (app: Router) => {
   app.use('/auth', route)
 
   route.get('/me', (req: Request, res: Response) => {
-    const logger = Container.get('logger')
+    // const logger = Container.get('logger')
     
-    const userModel  = Container.get('userModel')
+    // const customerModel  = Container.get('customerModel')
     
     return res.json({ name: 'jaafar' }).status(200)
   })
@@ -35,9 +34,9 @@ export default (app: Router) => {
       logger.debug('Calling Sign-Up endpoint with body: %o', req.body)
       try {
         const authServiceInstance = Container.get(AuthService)
-        const { user, token } = await authServiceInstance.signUp(req.body as IUserInput)
+        const { customer, token } = await authServiceInstance.signUp(req.body as ICustomerInput)
         
-        return res.status(201).json({ user, token });
+        return res.status(201).json({ customer, token });
       } catch (error) {
         logger.error('🔥 error: %o', error);
         return next(error);
@@ -59,9 +58,9 @@ export default (app: Router) => {
       try {
         const { email, password } = req.body;
         const authServiceInstance = Container.get(AuthService)
-        const { user, token } = await authServiceInstance.SignIn(email, password)
-
-        return res.status(201).json({ user, token });
+        const { customer, token } = await authServiceInstance.SignIn(email, password)
+        console.log(customer)
+        return res.status(201).json({ customer, token });
         
       } catch (error) {
         logger.error('🔥 error: %o', error);

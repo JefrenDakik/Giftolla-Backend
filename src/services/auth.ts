@@ -1,50 +1,46 @@
-import User from '../models/mysql/user'
-import { IUserInput } from '../interfaces/IUser'
+import Customer from '../models/mysql/customer'
+import { ICustomerInput } from '../interfaces/ICustomer'
 import { Service, Inject } from 'typedi'
-import { Connection } from 'typeorm'
+import { Connection, Repository } from 'typeorm'
 import { randomBytes } from 'crypto'
 import jwt from 'jsonwebtoken'
 import argon2 from 'argon2'
 import winston from 'winston'
 import config from '../config'
+import { InjectRepository } from 'typeorm-typedi-extensions';
+import { CustomerRepository } from '../repositories/customer'
 
 @Service()
 export default class AuthService {
+
   constructor(
-    @Inject('mysqlConnection') private mysqlConnection: Connection,
     @Inject('logger') private logger: winston.Logger,
+    @InjectRepository() private readonly customerRepository: CustomerRepository,
   ){}
 
-  public async signUp(userInput: IUserInput): Promise<{ user: User; token: string }> {
+  public async signUp(customerInput: ICustomerInput): Promise<{ customer: Customer; token: string }> {
     try {
       const salt = randomBytes(32)
-
       this.logger.debug('Hashing password')
-      const hashedPassword = await argon2.hash(userInput.password, { salt })
+      const hashedPassword = await argon2.hash(customerInput.password, { salt })
 
       this.logger.silly('Creating user db record')
-      let userModel = new User()
-      userModel.name = userInput.name
-      userModel.email = userInput.email
-      userModel.password = hashedPassword
-      userModel.salt = salt.toString('hex')
+      const customerModel = this.customerRepository.create({
+        name: customerInput.name,
+        email: customerInput.email,
+        password: hashedPassword,
+        salt: salt.toString('hex'),
+      })
 
-      const user = await this.mysqlConnection.manager
-        .save(userModel)
-        .then(user => {
-          this.logger.silly("User has been saved, id is ", user.id)
-          return user
-        }).catch(error => {
-          throw new Error(error)
-        })
+      const customer = await this.customerRepository.saveCustomer(customerModel)
 
       this.logger.silly('Generating JWT')
-      const token: string = this.generateToken(user)
+      const token: string = this.generateToken(customer)
 
-      Reflect.deleteProperty(user, 'password')
-      Reflect.deleteProperty(user, 'salt')
+      Reflect.deleteProperty(customer, 'password')
+      Reflect.deleteProperty(customer, 'salt')
 
-      return { user, token }
+      return { customer, token }
       
     } catch (error) {
       this.logger.error(error)
@@ -52,31 +48,27 @@ export default class AuthService {
     }
   }
 
-  public async SignIn(email: string, password: string): Promise<{ user: User; token: string}> {
+  public async SignIn(email: string, password: string): Promise<{ customer: Customer; token: string}> {
     try {
-      const userRepository = this.mysqlConnection.getRepository(User)
-      const user = await userRepository.findOne({ email: email })
-      if (!user) {
-        throw new Error("User Not Registered")
-      }
+      const customer = await this.customerRepository.findByEmail(email)
 
       /**
        * We use verify from argon2 to prevent 'timing based' attacks
        */
       this.logger.silly('Checking password')
-      const validPassword = await argon2.verify(user.password, password)
+      const validPassword = await argon2.verify(customer.password, password)
       if (!validPassword) {
         console.log("invalid pass")
         throw new Error("Invalid Password")
       }
       this.logger.silly('Password is valid!')
       this.logger.silly('Generating JWT')
-      const token = this.generateToken(user)
+      const token = this.generateToken(customer)
 
-      Reflect.deleteProperty(user, 'password')
-      Reflect.deleteProperty(user, 'salt')
+      Reflect.deleteProperty(customer, 'password')
+      Reflect.deleteProperty(customer, 'salt')
 
-      return { user, token }
+      return { customer, token }
 
     } catch (error) {
         this.logger.error(error)
@@ -84,7 +76,7 @@ export default class AuthService {
     }
   }
 
-  private generateToken(user) {
+  private generateToken(customer) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
@@ -98,11 +90,11 @@ export default class AuthService {
      * because it doesn't have _the secret_ to sign it
      * more information here: https://softwareontheroad.com/you-dont-need-passport
      */
-    this.logger.silly(`Sign JWT for userId: ${user.id}`);
+    this.logger.silly(`Sign JWT for userId: ${customer.id}`);
     return jwt.sign(
       {
-        _id: user.id, // We are gonna use this in the middleware 'isAuth'
-        name: user.name,
+        _id: customer.id, // We are gonna use this in the middleware 'isAuth'
+        name: customer.name,
         exp: exp.getTime() / 1000,
       },
       config.jwtSecret,

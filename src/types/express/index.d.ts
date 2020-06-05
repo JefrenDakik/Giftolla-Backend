@@ -1,9 +1,9 @@
-import User from '../../models/mysql/user';
+import Customer from '../../models/mysql/customer';
 
 declare global {
   declare namespace Express {
     export interface Request {
-      currentUser: User;
+      currentCustomer: Customer;
     }    
   }
 }

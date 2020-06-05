@@ -1,6 +1,6 @@
 import { Container } from 'typedi';
 import { Connection } from 'typeorm'
-import User from '../../models/mysql/user'
+import Customer from '../../models/mysql/customer'
 import winston from 'winston';
 
 /**
@@ -13,16 +13,16 @@ const attachCurrentUser = async (req, res, next) => {
   const Logger: winston.Logger = Container.get('logger');
   try {
     const mysqlConnection: Connection = Container.get('mysqlConnection')
-    const userRepository = mysqlConnection.getRepository(User)
-    const user = await userRepository.findOne({id: req.token._id})
+    const customerRepository = mysqlConnection.getRepository(Customer)
+    const customer = await customerRepository.findOne({id: req.token._id})
 
-    if (!user) {
+    if (!customer) {
       return res.sendStatus(401);
     }
     
-    Reflect.deleteProperty(user, 'password');
-    Reflect.deleteProperty(user, 'salt');
-    req.currentUser = user;
+    Reflect.deleteProperty(customer, 'password');
+    Reflect.deleteProperty(customer, 'salt');
+    req.currentCustomer = customer;
 
     return next();
   } catch (e) {
