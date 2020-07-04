@@ -1,9 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, OneToMany, OneToOne, JoinColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn, Column, Double } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, ManyToOne } from 'typeorm'
+import ShipperToCountry from './shipperToCountry';
 import ProductToOrder from './productToOrder'
 import ProductToCart from './productToCart'
 import ProductToWishlist from './productToWishlist'
-import Description from './description'
-import ProductImage from './productImage'
+import ProductDetail from './productDetail';
+import Color from './color';
 
 @Entity()
 export default class Product {
@@ -11,51 +12,16 @@ export default class Product {
   id: number
 
   @Column()
-  name: string
-
-  @Column({
-    type: 'double'
-  })
-  price: number
+  quantity!: number
 
   @Column({
     type: 'decimal',
+    nullable: false,
     precision: 6,
     scale: 5,
     default: 0
   })
   saleRatio!: number
-
-  @Column({
-    type: 'char',
-    length: 7
-  })
-  colorHexadecimal: string
-
-  @Column()
-  language: string
-
-  @Column()
-  category: string
-
-  // Description paragragh for product
-  @Column({
-    type: 'text'
-  })
-  infoParagragh: string
-
-  @OneToOne(type => Description)
-  @JoinColumn()
-  description: Description
-
-  @OneToMany(type => ProductImage, productImages => productImages.product)
-  productImages!: ProductImage[]
-
-  // @OneToMany(type => ProductToColorToLanguage, productToColorToLanguage => productToColorToLanguage.product)
-  // productToColorToLanguages!: ProductToColorToLanguage[]
-
-  // @OneToMany(type => ProductToCategory, productToCategory => productToCategory.product)
-  // productToCategories!: ProductToCategory[]
 
   @OneToMany(type => ProductToOrder, productToOrder => productToOrder.product)
   productToOrders!: ProductToOrder[]
@@ -65,6 +31,12 @@ export default class Product {
 
   @OneToMany(type => ProductToWishlist, productToWishlist => productToWishlist.product)
   productToWishlists!: ProductToWishlist[]
+  
+  @ManyToOne(type => ProductDetail, productDetail => productDetail.products)
+  public productDetail!: ProductDetail
+
+  @ManyToOne(type => Color, color => color.products)
+  public color!: Color
 
   @CreateDateColumn()
   createdAt
@@ -74,5 +46,4 @@ export default class Product {
 
   @DeleteDateColumn()
   deletedAt
-
 }

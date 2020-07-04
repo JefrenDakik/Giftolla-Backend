@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
 import ShipperToCountry from './shipperToCountry';
+import Address from './address';
 
 @Entity()
 export default class Country {
@@ -18,6 +19,9 @@ export default class Country {
 
   @OneToMany(type => ShipperToCountry, shipperToCountry => shipperToCountry.country)
   public shipperToCountries!: ShipperToCountry[]
+
+  @OneToMany(type => Address, address => address.country)
+  addresses: Address[];
 
   @CreateDateColumn()
   createdAt

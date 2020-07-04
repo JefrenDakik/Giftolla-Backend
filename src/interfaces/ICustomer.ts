@@ -1,4 +1,4 @@
-export interface ICustomer {
+export interface ICustomerDto {
   _id: string;
   name: string;
   email: string;

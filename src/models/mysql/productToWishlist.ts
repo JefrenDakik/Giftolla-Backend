@@ -1,11 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryColumn } from 'typeorm'
 import Product from './product'
 import Wishlist from './wishlist'
 
 @Entity()
 export default class ProductToWishlist {
-  @PrimaryGeneratedColumn()
-  id: number
+  // @PrimaryGeneratedColumn()
+  // id: number
+
+  @PrimaryColumn()
+  public productId!: number;
+
+  @PrimaryColumn()
+  public wishlistId!: number;
 
   @Column({
     type: 'int'
@@ -13,9 +19,14 @@ export default class ProductToWishlist {
   quantity: number
 
   @Column({
-    type: 'double'
+    type: 'boolean'
   })
-  totalUnitPrice: number
+  checked: boolean
+
+  // @Column({
+  //   type: 'double'
+  // })
+  // totalUnitPrice: number
 
   @ManyToOne(type => Product, product => product.productToWishlists)
   product!: Product
@@ -30,6 +41,6 @@ export default class ProductToWishlist {
   updatedAt
 
   @DeleteDateColumn()
-  deletedAt
+  deletedAt?: Date;
 
 }

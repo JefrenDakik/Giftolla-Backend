@@ -4,15 +4,16 @@ import cors from 'cors'
 import routes from '../api'
 import config from '../config'
 import LoggerInstance from './logger'
+import fileUplaod from 'express-fileupload'
+import path from 'path'
 
 export default async ({ app }: { app: express.Application }) => {
-  app.use((req, res, next) => {
-    next()
-  })
   /**
    * Health Check endpoints
    * @TODO Explain why they are here
    */
+  app.use(express.static(path.join(__dirname, '/../public')))
+
   app.get('/status', (req, res) => {
     res.status(200).end()
   })
@@ -37,10 +38,11 @@ export default async ({ app }: { app: express.Application }) => {
 
   // Middleware that transforms the raw string of req.body into json
 
+  // Middleware that transforms the raw string of req.body into json
   app.use(bodyParser.urlencoded({
     extended: true
   }));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json())
 
   // Load API routes
   app.use(config.api.prefix, routes())

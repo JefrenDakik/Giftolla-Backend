@@ -30,14 +30,17 @@ export default class Address {
   @Column()
   phone_number: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   delivery_instructions: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   building_security_code: string
 
-  @OneToOne(type => Country)
-  @JoinColumn()
+  @ManyToOne(type => Country, country => country.addresses)
   country: Country
 
   @ManyToOne(type => Customer, customer => customer.addresses)

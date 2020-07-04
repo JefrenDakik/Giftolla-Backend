@@ -1,21 +1,27 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, OneToMany, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, PrimaryColumn } from 'typeorm'
 import Product from './product'
 import Cart from './cart'
 
 @Entity()
 export default class ProductToCart {
-  @PrimaryGeneratedColumn()
-  id: number
+  // @PrimaryGeneratedColumn()
+  // id: number
 
   @Column({
     type: 'int'
   })
   quantity: number
 
-  @Column({
-    type: 'double'
-  })
-  totalUnitPrice: number
+  @PrimaryColumn()
+  public productId!: number;
+
+  @PrimaryColumn()
+  public cartId!: number;
+
+  // @Column({
+  //   type: 'double'
+  // })
+  // totalUnitPrice: number
 
   @ManyToOne(type => Product, product => product.productToCarts)
   product!: Product

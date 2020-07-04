@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express'
 import { Container } from 'typedi'
-import AuthService from '../../services/auth'
+import AuthService from '../../services/authService'
 import { celebrate, Joi, Segments } from 'celebrate'
 import winston from 'winston'
 import { ICustomerInput } from '../../interfaces/ICustomer'
@@ -25,8 +25,9 @@ export default (app: Router) => {
     celebrate({
       [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
-        email: Joi.string().required(),
+        email: Joi.string().required().email(),
         password: Joi.string().required(),
+        confirmPassword: Joi.string().required().valid(Joi.ref('password')),
       })
     }),
     async (req: Request, res: Response, next: NextFunction) => {
@@ -36,10 +37,10 @@ export default (app: Router) => {
         const authServiceInstance = Container.get(AuthService)
         const { customer, token } = await authServiceInstance.signUp(req.body as ICustomerInput)
         
-        return res.status(201).json({ customer, token });
+        return res.status(201).json({ customer, token })
       } catch (error) {
-        logger.error('🔥 error: %o', error);
-        return next(error);
+        logger.error('🔥 error: %o', error)
+        return next(error)
       }
   })
 

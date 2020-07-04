@@ -1,19 +1,40 @@
-{
-  "type": "mysql",
-  "host": "localhost",
-  "port": 3306,
-  "username": "root",
-  "password": "Jd00349689",
-  "database": "be-unique",
-  "synchronize": true,
-  "logging": false,
-  "entities": [
-     "src/models/mysql/**/*.ts"
-  ],
-  "migrations": [
-     "src/migration/**/*.ts"
-  ],
-  "subscribers": [
-     "src/subscriber/**/*.ts"
-  ]
-}
+[
+  {
+    "name": "be-unique",
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "Jd00349689",
+    "database": "be-unique",
+    "synchronize": true,
+    "logging": false,
+    "entities": [
+      "src/models/mysql/**/*.ts"
+    ],
+    "migrations": [
+      "src/migration/**/*.ts"
+    ],
+    "subscribers": [
+      "src/subscriber/**/*.ts"
+    ],
+    "cli": {
+      "migrationsDir": "src/migration"
+    }
+  },
+  {
+    "name": "seed",
+    "type": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "password": "Jd00349689",
+    "database": "be-unique",
+    "migrations": [
+      "src/seeds/*.ts"
+    ],
+    "cli": {
+      "migrationsDir": "src/seeds"
+    }
+  }
+]

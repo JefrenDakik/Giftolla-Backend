@@ -12,10 +12,10 @@ export default class ProductToOrder {
   })
   quantity: number
 
-  @Column({
-    type: 'double'
-  })
-  totalUnitPrice: number
+  // @Column({
+  //   type: 'double'
+  // })
+  // totalUnitPrice: number
 
   @ManyToOne(type => Product, product => product.productToOrders)
   product!: Product

@@ -3,7 +3,7 @@ import Middlewares from '../middlewares';
 const route = Router();
 
 export default (app: Router) => {
-  app.use('/user', route)
+  app.use('/customer', route)
 
   route.get('/me', Middlewares.isAuth, Middlewares.attachCurrentCustomer,
     async (req: Request, res: Response) => {

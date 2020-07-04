@@ -14,7 +14,10 @@ const attachCurrentUser = async (req, res, next) => {
   try {
     const mysqlConnection: Connection = Container.get('mysqlConnection')
     const customerRepository = mysqlConnection.getRepository(Customer)
-    const customer = await customerRepository.findOne({id: req.token._id})
+    const customer = await customerRepository.findOne({ 
+      where: { id: req.token._id },
+      relations: ['wishlist', 'cart']
+    })
 
     if (!customer) {
       return res.sendStatus(401);

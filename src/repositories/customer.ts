@@ -26,11 +26,9 @@ export class CustomerRepository extends Repository<Customer>{
     return customerRecord
   }
 
-  public async findByEmail(email: string): Promise<Customer> {
+  public async findByEmail(email: string): Promise<Customer | undefined> {
     const customerRecord = await this.findOne({ email: email })
-      if (!customerRecord) {
-        throw new Error("Customer Not Registered")
-      }
+
     return customerRecord
   }
 

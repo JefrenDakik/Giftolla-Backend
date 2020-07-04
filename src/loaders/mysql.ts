@@ -1,9 +1,10 @@
-import {createConnection, useContainer } from "typeorm"
+import {createConnection, useContainer, Connection } from "typeorm"
 import { Container } from 'typedi'
+import seedDatabase from '../seeds/index'
 
 export default async () => {
   useContainer(Container)
-  return await createConnection({
+  const connection =  await createConnection({
     type: "mysql",
     host: "localhost",
     port: 3306,
@@ -19,4 +20,8 @@ export default async () => {
     return connection
     // here you can start to work with your entities
   }).catch(error => console.log(error))
+
+  seedDatabase(connection)
+
+  return connection
 }

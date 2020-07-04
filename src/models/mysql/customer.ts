@@ -33,14 +33,18 @@ export default class Customer {
   @JoinColumn()
   wishlist: Wishlist
 
+  @OneToOne(type => Cart)
+  @JoinColumn()
+  cart: Cart
+
   @OneToMany(type => Address, address => address.customer)
   addresses: Address[];
 
   @OneToMany(type => Order, order => order.customer)
   orders: Order[];
 
-  @OneToMany(type => Cart, cart => cart.customer)
-  carts: Order[];
+  // @OneToMany(type => Cart, cart => cart.customer)
+  // carts: Order[];
 
   @OneToMany(type => BillingInfo, billingInfo => billingInfo.customer)
   billingInfos: BillingInfo[];

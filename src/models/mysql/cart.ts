@@ -7,8 +7,8 @@ export default class Cart {
   @PrimaryGeneratedColumn()
   id: number
 
-  @ManyToOne(type => Customer, customer => customer.carts)
-  customer: Customer
+  // @ManyToOne(type => Customer, customer => customer.carts)
+  // customer: Customer
 
   @OneToMany(type => ProductToCart, productToCart => productToCart.cart)
   productToCarts!: ProductToCart[]

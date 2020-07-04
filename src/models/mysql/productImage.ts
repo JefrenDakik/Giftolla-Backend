@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, Column } from 'typeorm'
-import Product from './product'
+import ProductDetail from './productDetail'
 
 @Entity()
 export default class ProductImage {
@@ -9,16 +9,16 @@ export default class ProductImage {
   @Column()
   src: string
 
-  @ManyToOne(type => Product, product => product.productImages)
-  product: Product
+  @ManyToOne(type => ProductDetail, productDetail => productDetail.productImages)
+  productDetail: ProductDetail
 
   @CreateDateColumn()
-  createdAt
+  createdAt?
 
   @UpdateDateColumn()
-  updatedAt
+  updatedAt?
 
   @DeleteDateColumn()
-  deletedAt
+  deletedAt?
 
 }
