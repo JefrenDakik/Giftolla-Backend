@@ -74,7 +74,7 @@ export default (app: Router) => {
 
         await wishlistService.deleteProductToWishlist(customerWishlistId, productId)
 
-        return res.json().status(200);
+        return res.json({}).status(200);
       } catch (error) {
         console.log(error)
         return next(error)

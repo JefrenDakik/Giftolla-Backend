@@ -32,4 +32,15 @@ export class CustomerRepository extends Repository<Customer>{
     return customerRecord
   }
 
+  public async findByFacebookIdOrEmail(facebookId: string, email: string): Promise<Customer | undefined> {
+    const customerRecord = await this.findOne({
+      where: [
+        { facebookId: facebookId },
+        { email: email }
+      ]
+    })
+
+    return customerRecord
+  }
+
 }

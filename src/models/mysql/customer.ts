@@ -19,11 +19,21 @@ export default class Customer {
   @Column("text")
   email: string;
 
-  @Column("text")
+  @Column({
+    type: "text",
+    nullable: true
+  })
   password: string
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   salt: string
+
+  @Column({
+    nullable: true
+  })
+  facebookId: string
 
   @OneToOne(type => Country)
   @JoinColumn()

@@ -11,3 +11,9 @@ export interface ICustomerInput {
   email: string;
   password: string;
 }
+
+export interface IFacebookCustomerInput {
+  name: string;
+  email: string;
+  facebookId: string;
+}

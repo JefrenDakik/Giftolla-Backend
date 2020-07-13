@@ -13,7 +13,7 @@ export class ProductDtoFactory {
       if(product.quantity == 0) {
         outOfStock = true
       }
-
+      
       delete product.productDetail.description.updatedAt
       delete product.productDetail.description.deletedAt
       delete product.productDetail.description.createdAt

@@ -77,7 +77,6 @@ export default class WishlistService {
       )
 
       return result
-
     } catch (error) {
       this.logger.error(error)
       throw error

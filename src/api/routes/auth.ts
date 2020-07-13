@@ -3,7 +3,7 @@ import { Container } from 'typedi'
 import AuthService from '../../services/authService'
 import { celebrate, Joi, Segments } from 'celebrate'
 import winston from 'winston'
-import { ICustomerInput } from '../../interfaces/ICustomer'
+import { ICustomerInput, IFacebookCustomerInput } from '../../interfaces/ICustomer'
 
 const route = Router()
 
@@ -15,10 +15,8 @@ export default (app: Router) => {
     
     // const customerModel  = Container.get('customerModel')
     
-    return res.json({ name: 'jaafar' }).status(200)
+    return res.json({}).status(200)
   })
-
-  
 
   route.post(
     '/signup',
@@ -35,7 +33,10 @@ export default (app: Router) => {
       logger.debug('Calling Sign-Up endpoint with body: %o', req.body)
       try {
         const authServiceInstance = Container.get(AuthService)
-        const { customer, token } = await authServiceInstance.signUp(req.body as ICustomerInput)
+
+        const customerInput = req.body as ICustomerInput
+
+        const { customer, token } = await authServiceInstance.signUp(customerInput)
         
         return res.status(201).json({ customer, token })
       } catch (error) {
@@ -61,6 +62,35 @@ export default (app: Router) => {
         const authServiceInstance = Container.get(AuthService)
         const { customer, token } = await authServiceInstance.SignIn(email, password)
         console.log(customer)
+        return res.status(201).json({ customer, token });
+        
+      } catch (error) {
+        logger.error('🔥 error: %o', error);
+        return next(error);
+      }
+    }
+  )
+
+  route.post(
+    '/facebook',
+    celebrate({
+      body: Joi.object({
+        facebookId: Joi.string().required(),
+        email: Joi.string().required(),
+        name: Joi.string().required(),
+      }),
+    }),
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger: winston.Logger = Container.get('logger')
+      logger.debug('Calling Facebook-Login endpoint with body: %o', req.body)
+
+      try {
+        const authServiceInstance = Container.get(AuthService)
+
+        const customerInput = req.body as IFacebookCustomerInput
+        
+        const { customer, token } = await authServiceInstance.loginWithFacebook(customerInput)
+        
         return res.status(201).json({ customer, token });
         
       } catch (error) {

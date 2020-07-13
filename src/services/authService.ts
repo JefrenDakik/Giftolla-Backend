@@ -1,7 +1,6 @@
 import Customer from '../models/mysql/customer'
-import { ICustomerInput } from '../interfaces/ICustomer'
+import { ICustomerInput, IFacebookCustomerInput } from '../interfaces/ICustomer'
 import { Service, Inject } from 'typedi'
-import { Connection, Repository } from 'typeorm'
 import { randomBytes } from 'crypto'
 import jwt from 'jsonwebtoken'
 import argon2 from 'argon2'
@@ -21,7 +20,7 @@ export default class AuthService {
     @InjectRepository() private readonly cartRepository: CartRepository,
     @InjectRepository() private readonly wishlistRepository: WishlistRepository,
   ){}
-
+  
   public async signUp(customerInput: ICustomerInput): Promise<{ customer: Customer; token: string }> {
     try {
       let customer
@@ -89,15 +88,60 @@ export default class AuthService {
       return { customer, token }
 
     } catch (error) {
-        this.logger.error(error)
-        throw error
+      this.logger.error(error)
+      throw error
+    }
+  }
+
+  public async loginWithFacebook(customerInput: IFacebookCustomerInput): Promise<{ customer: Customer; token: string}> {
+    try {
+      let customer = await this.customerRepository.findByFacebookIdOrEmail(
+        customerInput.facebookId,
+        customerInput.email,
+      )
+      
+      if(!customer) {
+        const cart = await this.cartRepository.createCart()
+        const wishlist = await this.wishlistRepository.createWishlist()
+
+        const customerModel = this.customerRepository.create({
+          name: customerInput.name,
+          email: customerInput.email,
+          facebookId: customerInput.facebookId,
+          cart: cart,
+          wishlist: wishlist,
+        })
+
+        customer = await this.customerRepository.saveCustomer(customerModel)
+      } else {
+        // handle usecase when user change his facebook email
+        const customerModel = this.customerRepository.create({
+          id: customer.id,
+          name: customerInput.name,
+          email: customerInput.email,
+        })
+
+        customer = await this.customerRepository.saveCustomer(customerModel)
+      }
+
+      this.logger.silly('Generating JWT')
+      const token: string = this.generateToken(customer)
+
+      Reflect.deleteProperty(customer, 'password')
+      Reflect.deleteProperty(customer, 'salt')
+
+      return { customer, token }
+    
+    } catch (error) {
+      this.logger.error(error)
+      throw error
     }
   }
 
   private generateToken(customer) {
-    const today = new Date();
-    const exp = new Date(today);
-    exp.setDate(today.getDate() + 60);
+    const today = new Date()
+    const exp = new Date(today)
+    exp.setDate(today.getDate() + 60)
 
     /**
      * A JWT means JSON Web Token, so basically it's a json that is _hashed_ into a string
@@ -108,7 +152,7 @@ export default class AuthService {
      * because it doesn't have _the secret_ to sign it
      * more information here: https://softwareontheroad.com/you-dont-need-passport
      */
-    this.logger.silly(`Sign JWT for userId: ${customer.id}`);
+    this.logger.silly(`Sign JWT for userId: ${customer.id}`)
     return jwt.sign(
       {
         _id: customer.id, // We are gonna use this in the middleware 'isAuth'

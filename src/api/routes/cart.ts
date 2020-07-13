@@ -55,7 +55,7 @@ export default (app: Router) => {
 
         await cartService.deleteProductToCart(customerCartId, productId)
 
-        return res.json().status(200);
+        return res.json({}).status(200)
       } catch (error) {
         console.log(error)
         return next(error)

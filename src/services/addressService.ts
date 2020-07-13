@@ -54,4 +54,18 @@ export default class AddressService {
       throw error
     }
   }
+
+  public async deleteAddress(customerId: number, addressId: number) {
+    try {
+      const result = await this.addressRepository.deleteAddress(
+        customerId,
+        addressId
+      )
+
+      return result
+    } catch (error) {
+      this.logger.error(error)
+      throw error
+    }
+  }
 }

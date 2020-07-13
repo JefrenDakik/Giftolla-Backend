@@ -45,4 +45,21 @@ export class AddressRepository extends Repository<Address>{
     return addressDto
   }
 
+  public async deleteAddress(customerId: number, addressId: number) {
+    const result = await this.delete({
+      id: addressId,
+      customer: {
+        id: customerId
+      }
+    })
+    .then(result => {
+      return result
+    })
+    .catch(error => {
+      throw new Error(error)
+    })
+
+    return result
+  }
+
 }
